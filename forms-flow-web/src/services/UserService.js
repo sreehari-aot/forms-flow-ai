@@ -16,10 +16,23 @@ import {BPM_BASE_URL} from "../apiManager/endpoints/config";
 import {AppConfig} from '../config';
 import {WEB_BASE_URL , WEB_BASE_CUSTOM_URL} from "../apiManager/endpoints/config";
 
-import {_kc} from "../constants/tenantConstant";
+// import {_kc} from "../constants/tenantConstant";
 import { setLanguage } from "../actions/languageSetAction";
+import Keycloak from "keycloak-js";
+import {getTenantKeycloakJson} from "../apiManager/services/tenantServices";
 
 const jwt = require("jsonwebtoken");
+let KeycloakData, doLogin, doLogout ;
+
+const setKeycloakJson = (tenantKey, ...rest)=>{
+  let kcJson;
+  const done = rest.length ? rest[0] :  ()=>{};
+  kcJson = getTenantKeycloakJson(tenantKey);
+  KeycloakData = new Keycloak(kcJson);
+  doLogin = KeycloakData?.login;
+  doLogout = KeycloakData?.logout;
+  done(null,KeycloakData);
+}
 
 /**
  * Initializes Keycloak instance and calls the provided callback function if successfully authenticated.
@@ -159,10 +172,10 @@ const authenticateFormio = (user, roles) => {
 };
 
 
-const KeycloakData= _kc;
+// const KeycloakData= _kc;
 
-const doLogin = KeycloakData.login;
-const doLogout = KeycloakData.logout;
+// const doLogin = KeycloakData.login;
+// const doLogout = KeycloakData.logout;
 const getToken = () => KeycloakData.token;
 
 const UserService ={
@@ -170,7 +183,8 @@ const UserService ={
   userLogout,
   getToken,
   getFormioToken,
-  authenticateAnonymousUser
+  authenticateAnonymousUser,
+  setKeycloakJson
 };
 
 export default UserService;
