@@ -9,10 +9,9 @@ export const getTenantKeycloakJson = (tenantKey) => {
   return tenantDetail;
 }
 
-// Need to update to new flow by sreehari
 export const setTenantFromId = (tenantKey, ...rest)=>{
     const done = rest.length ? rest[0] :  ()=>{};
-    tenantDetail.clientId = tenantKey + "-" + tenantDetail.clientId
+    // tenantDetail.clientId = tenantKey + "-" + tenantDetail.clientId
     return dispatch => {
       dispatch(setTenantID(tenantKey));
       dispatch(setTenantDetails(tenantDetail));

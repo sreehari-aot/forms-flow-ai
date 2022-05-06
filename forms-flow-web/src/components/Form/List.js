@@ -16,6 +16,7 @@ import {
 import Loading from "../../containers/Loading";
 import {
   FORM_ACCESS,
+  MULTITENANCY_ENABLED,
   STAFF_DESIGNER, SUBMISSION_ACCESS,
 } from "../../constants/constants";
 import "../Form/List.scss";
@@ -326,6 +327,7 @@ const getInitForms = (page = 1, query) => {
 }
 
 const mapDispatchToProps = (dispatch,state, ownProps) => {
+  let tenantKey = state?.user?.userDetails?.tenantKey
   return {
     getForms: (page, query) => {
       dispatch(indexForms("forms", page, query));
@@ -334,12 +336,13 @@ const mapDispatchToProps = (dispatch,state, ownProps) => {
       dispatch(getInitForms(page, query));
     },
     onAction: async (form, action) => {
+      const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/' 
       switch (action) {
         case "insert":
-          dispatch(push(`/form/${form._id}`));
+          dispatch(push(`${redirectUrl}form/${form._id}`));
           break;
         case "submission":
-          dispatch(push(`/form/${form._id}/submission`));
+          dispatch(push(`${redirectUrl}form/${form._id}/submission`));
           break;
         // case "edit":
         //   dispatch(push(`/form/${form._id}/edit`));
@@ -368,7 +371,7 @@ const mapDispatchToProps = (dispatch,state, ownProps) => {
         case "viewForm":
           dispatch(resetFormProcessData())
           dispatch(setMaintainBPMFormPagination(true));
-          dispatch(push(`/formflow/${form._id}/view-edit`));
+          dispatch(push(`${redirectUrl}/formflow/${form._id}/view-edit`));
           break;
         default:
       }

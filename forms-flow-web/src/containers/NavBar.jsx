@@ -12,6 +12,7 @@ import {push} from "connected-react-router";
 import i18n from "../resourceBundles/i18n";
 import { setLanguage } from "../actions/languageSetAction";
 import {updateUserlang} from "../apiManager/services/userservices";
+import { MULTITENANCY_ENABLED } from "../constants/constants";
 
 const NavBar = React.memo(() => {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
@@ -21,6 +22,7 @@ const NavBar = React.memo(() => {
   const lang = useSelector((state) => state.user.lang);
   const userRoles = useSelector((state) => state.user.roles);
   const showApplications= useSelector((state) => state.user.showApplications);
+  const tenantKey = useSelector((state) => state.user?.userDetail?.tenantKey)
   const dispatch = useDispatch();
   const logoPath = "/logo.svg";
   const appName = APPLICATION_NAME;
@@ -37,7 +39,8 @@ const NavBar = React.memo(() => {
    dispatch(updateUserlang(selectedLang))
  }
   const logout = () => {
-      dispatch(push(`/`));
+      const logoutUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}` : "/"
+      dispatch(push(logoutUrl));
       UserService.userLogout();
   }
 
