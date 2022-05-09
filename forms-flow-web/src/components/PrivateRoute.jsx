@@ -1,7 +1,7 @@
 import React, {useEffect, Suspense, lazy} from "react";
 import {Route, Switch, Redirect, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import { BASE_ROUTE } from "../constants/constants";
+import { BASE_ROUTE, MULTITENANCY_ENABLED } from "../constants/constants";
 import UserService from "../services/UserService";
 import {setUserAuth} from "../actions/bpmActions";
 import {CLIENT, Keycloak_Client, STAFF_REVIEWER} from "../constants/constants";
@@ -25,7 +25,7 @@ const PrivateRoute = React.memo((props) => {
   // const tenant = useSelector((state) => state.tenants.tenantDetail);
   // const tenantKey = useSelector((state) => state.tenants.tenantId);
   const {tenantId} = useParams()
-
+  const redirecUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantId}/` : `/`
   // useEffect(() => {
   //   if (props.store) {
   //     UserService.initKeycloak(props.store, (err, res) => {
@@ -104,7 +104,7 @@ const PrivateRoute = React.memo((props) => {
             <ReviewerRoute path={`${BASE_ROUTE}task`} component={ServiceFlow}/>
             <ReviewerRoute path={`${BASE_ROUTE}insights`} component={InsightsPage}/>
             <Route exact path={BASE_ROUTE}>
-              <Redirect to={userRoles.includes(STAFF_REVIEWER) ? `${BASE_ROUTE}task` : `${BASE_ROUTE}form`}/>
+              <Redirect to={userRoles.includes(STAFF_REVIEWER) ? `${redirecUrl}task` : `${redirecUrl}form`}/>
             </Route>
             <Route path='/404' exact={true} component={NotFound}/>
             <Redirect from='*' to='/404'/>
