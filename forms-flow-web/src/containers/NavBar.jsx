@@ -22,7 +22,7 @@ const NavBar = React.memo(() => {
   const lang = useSelector((state) => state.user.lang);
   const userRoles = useSelector((state) => state.user.roles);
   const showApplications= useSelector((state) => state.user.showApplications);
-  const tenantKey = useSelector((state) => state.user?.userDetail?.tenantKey)
+  const tenantKey = useSelector((state) => state.tenant?.tenantId)
   const dispatch = useDispatch();
   const logoPath = "/logo.svg";
   const appName = APPLICATION_NAME;

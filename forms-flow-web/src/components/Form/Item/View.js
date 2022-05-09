@@ -271,6 +271,7 @@ const doProcessActions = (submission, ownProps) => {
 const mapStateToProps = (state) => {
   return {
     user: state.user.userDetail,
+    tenant: state?.tenants?.tenantId,
     form: selectRoot("form", state),
     isAuthenticated: state.user.isAuthenticated,
     errors: [selectError("form", state), selectError("submission", state)],
