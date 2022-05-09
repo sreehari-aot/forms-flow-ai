@@ -37,7 +37,7 @@ const linkApplication = (cell, row) => {
 }
 
 
-const linkSubmission = (cell,row) => {
+const linkSubmission = (cell,row,redirectUrl) => {
   const url = row.isClientEdit ? `/form/${row.formId}/submission/${row.submissionId}/edit`:`/form/${row.formId}/submission/${row.submissionId}`;
   const buttonText = row.isClientEdit ? (row.applicationStatus===AWAITING_ACKNOWLEDGEMENT?'Acknowledge':<Translation>{(t)=>t("Edit")}</Translation>) : <Translation>{(t)=>t("View")}</Translation>
   const icon=row.isClientEdit? 'fa fa-edit' : 'fa fa-eye';
@@ -73,7 +73,7 @@ export const columns_history = [
   },
 ];
 
-export const columns  = (applicationStatus,lastModified,callback,t) => {
+export const columns  = (applicationStatus,lastModified,callback,t,redirectUrl) => {
   return [
     {
       dataField: "id",
@@ -127,7 +127,7 @@ export const columns  = (applicationStatus,lastModified,callback,t) => {
     {
       dataField: "formUrl",
       text: <Translation>{(t)=>t("Link To Form Submission")}</Translation>,
-      formatter: linkSubmission,
+      formatter:(cell,row)=>linkSubmission(cell,row,redirectUrl),
     },
 
     {
