@@ -177,7 +177,7 @@ const authenticateFormio = (user, roles) => {
 
 // const doLogin = KeycloakData.login;
 // const doLogout = KeycloakData.logout;
-const getToken = () => KeycloakData.token;
+const getToken = () => KeycloakData?.token;
 
 const UserService ={
   initKeycloak,
