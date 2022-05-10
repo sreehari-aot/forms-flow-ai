@@ -23,7 +23,7 @@ import {getTenantKeycloakJson} from "../apiManager/services/tenantServices";
 const jwt = require("jsonwebtoken");
 let KeycloakData, doLogin, doLogout ;
 
-const setKeycloakJson = (tenantKey, ...rest)=>{
+const setKeycloakJson = (tenantKey=null, ...rest)=>{
   let kcJson;
   const done = rest.length ? rest[0] :  ()=>{};
   kcJson = getTenantKeycloakJson(tenantKey);
@@ -44,7 +44,6 @@ const setKeycloakJson = (tenantKey, ...rest)=>{
 const initKeycloak = (store, ...rest) => {
   const clientId = rest.length && rest[0]
   const done = rest.length ? rest[1] : () => {};
-  // const clientId = `${tenantKey+"-"+Keycloak_Tenant_Client}`
   KeycloakData
     .init({
       onLoad: "check-sso",

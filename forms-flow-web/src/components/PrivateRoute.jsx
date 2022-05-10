@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import { BASE_ROUTE, MULTITENANCY_ENABLED } from "../constants/constants";
 import UserService from "../services/UserService";
 import {setUserAuth} from "../actions/bpmActions";
-import {CLIENT, Keycloak_Client, STAFF_REVIEWER} from "../constants/constants";
+import {CLIENT, Keycloak_Client, STAFF_REVIEWER, Keycloak_Tenant_Client} from "../constants/constants";
 
 import Loading from "../containers/Loading";
 import NotFound from "./NotFound";
@@ -34,36 +34,49 @@ const PrivateRoute = React.memo((props) => {
   //   }
   // }, [props.store, dispatch]);
 
-  useEffect(()=>{    
+  useEffect(()=>{  
     if(tenantId){
-          sessionStorage.setItem("tenantKey", tenantId)
-          dispatch(setTenantFromId(tenantId))
+        let clientId = `${tenantId+"-"+Keycloak_Tenant_Client}`
+        sessionStorage.setItem("tenantKey", tenantId)
+        dispatch(setTenantFromId(tenantId))
+        if(UserService.KeycloakData){
+          UserService.initKeycloak(props.store, clientId, (err, res) => {
+            dispatch(setUserAuth(res.authenticated));
+          });
+        }else{
+          UserService.setKeycloakJson(tenantId,()=>{
+            UserService.initKeycloak(props.store, clientId, (err, res) => {
+              dispatch(setUserAuth(res.authenticated));
+            });
+          })
+        }
     }else{
       if (props.store) {
-            UserService.initKeycloak(props.store, Keycloak_Client, (err, res) => {
-              dispatch(setUserAuth(res.authenticated));
-          });
+            UserService.setKeycloakJson(null, ()=>{
+              UserService.initKeycloak(props.store, Keycloak_Client, (err, res) => {
+                dispatch(setUserAuth(res.authenticated));
+              });
+            })
       }
     }
   },[props.store,tenantId, dispatch])
 
-
-  useEffect(()=>{
-    if(tenantId){
-      let clientId = `${tenantId+"-"+Keycloak_Client}`
-      if(UserService.KeycloakData){
-        UserService.initKeycloak(props.store, clientId, (err, res) => {
-          dispatch(setUserAuth(res.authenticated));
-        });
-      }else{
-        UserService.setKeycloakJson(tenantId,()=>{
-          UserService.initKeycloak(props.store, clientId, (err, res) => {
-            dispatch(setUserAuth(res.authenticated));
-          });
-        })
-      }
-    }
-  },[dispatch, tenantId, props.store]);
+  // useEffect(()=>{
+  //   if(tenantId){
+  //     let clientId = `${tenantId+"-"+Keycloak_Tenant_Client}`
+  //     if(UserService.KeycloakData){
+  //       UserService.initKeycloak(props.store, clientId, (err, res) => {
+  //         dispatch(setUserAuth(res.authenticated));
+  //       });
+  //     }else{
+  //       UserService.setKeycloakJson(tenantId,()=>{
+  //         UserService.initKeycloak(props.store, clientId, (err, res) => {
+  //           dispatch(setUserAuth(res.authenticated));
+  //         });
+  //       })
+  //     }
+  //   }
+  // },[dispatch, tenantId, props.store]);
 
   const ReviewerRoute = ({component: Component, ...rest}) => (
     <Route

@@ -3,18 +3,24 @@ import {
   setTenantDetails,
   setTenantID,
 } from "../../actions/tenantActions";
+import { Keycloak_Tenant_Client } from "../../constants/constants";
 
 export const getTenantKeycloakJson = (tenantKey) => {
-  tenantDetail.clientId = tenantKey + "-" + tenantDetail.clientId
-  return tenantDetail;
+
+  let tenantData = {...tenantDetail}
+  if(tenantKey){
+    tenantData.clientId = tenantKey + "-" + Keycloak_Tenant_Client
+  }
+  return tenantData;
 }
 
 export const setTenantFromId = (tenantKey, ...rest)=>{
+    let tenantData = {...tenantDetail}
     const done = rest.length ? rest[0] :  ()=>{};
-    // tenantDetail.clientId = tenantKey + "-" + tenantDetail.clientId
+    tenantData.clientId = tenantKey + "-" + Keycloak_Tenant_Client
     return dispatch => {
       dispatch(setTenantID(tenantKey));
-      dispatch(setTenantDetails(tenantDetail));
+      dispatch(setTenantDetails(tenantData));
       done(null,tenantDetail);
  }
 }
