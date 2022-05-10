@@ -28,9 +28,9 @@ const getApplicationStatusOptions = (rows) => {
   return selectOptions;
 }
 
-const linkApplication = (cell, row) => {
+const linkApplication = (cell, row, redirectUrl) => {
   return (
-    <Link to={`/application/${row.id}`} title={cell}>
+    <Link to={`${redirectUrl}application/${row.id}`} title={cell}>
       {cell}
     </Link>
   );
@@ -38,7 +38,7 @@ const linkApplication = (cell, row) => {
 
 
 const linkSubmission = (cell,row,redirectUrl) => {
-  const url = row.isClientEdit ? `/form/${row.formId}/submission/${row.submissionId}/edit`:`/form/${row.formId}/submission/${row.submissionId}`;
+  const url = row.isClientEdit ? `${redirectUrl}form/${row.formId}/submission/${row.submissionId}/edit`:`${redirectUrl}form/${row.formId}/submission/${row.submissionId}`;
   const buttonText = row.isClientEdit ? (row.applicationStatus===AWAITING_ACKNOWLEDGEMENT?'Acknowledge':<Translation>{(t)=>t("Edit")}</Translation>) : <Translation>{(t)=>t("View")}</Translation>
   const icon=row.isClientEdit? 'fa fa-edit' : 'fa fa-eye';
   return (
@@ -78,7 +78,7 @@ export const columns  = (applicationStatus,lastModified,callback,t,redirectUrl) 
     {
       dataField: "id",
       text: <Translation>{(t)=>t("Application Id")}</Translation>,
-      formatter: linkApplication,
+      formatter: (cell, row)=>linkApplication(cell, row, redirectUrl),
       headerClasses: 'classApplicationId',
       sort: true,
       filter: textFilter({
