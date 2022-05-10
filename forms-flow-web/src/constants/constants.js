@@ -92,7 +92,7 @@ export const FORM_ACCESS =[{
 export const OPERATIONS = {
   insert: {
     action: "insert",
-    buttonType: "primary",
+    buttonType: "primary button_font",
     icon: "pencil",
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -101,7 +101,7 @@ export const OPERATIONS = {
   },
   submission: {
     action: "submission",
-    buttonType: "outline-primary",
+    buttonType: "outline-primary button_font",
     icon: "list-alt",
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -110,7 +110,7 @@ export const OPERATIONS = {
   },
   edit: {
     action: "edit",
-    buttonType: "secondary",
+    buttonType: "secondary button_font",
     icon: "edit",
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -120,7 +120,7 @@ export const OPERATIONS = {
   },
   viewForm: {
     action: "viewForm",
-    buttonType: "outline-primary",
+    buttonType: "outline-primary button_font",
     icon: "pencil-square-o",
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -130,7 +130,7 @@ export const OPERATIONS = {
   },
   delete: {
     action: "delete",
-    buttonType: "danger",
+    buttonType: " delete_button",
     icon: "trash",
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -167,6 +167,8 @@ export const OPERATIONS = {
     title: <Translation>{(t)=>t("Delete")}</Translation>,
   },
 };
+  
+export const PageSizes=[5,10,25,50,100,"all"]
 
 export const SUBMISSION_ACCESS = [
   {

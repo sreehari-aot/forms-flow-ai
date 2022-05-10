@@ -17,6 +17,7 @@ import Loading from "../../containers/Loading";
 import {
   FORM_ACCESS,
   MULTITENANCY_ENABLED,
+  PageSizes,
   STAFF_DESIGNER, SUBMISSION_ACCESS,
 } from "../../constants/constants";
 import "../Form/List.scss";
@@ -272,6 +273,7 @@ const List = React.memo((props) => {
                onAction={(form,action)=>{
                  onAction(form, action, redirectUrl)
                }}
+               pageSizes={PageSizes}
                getForms={isDesigner ? getForms : getFormsList}
                operations={operations}
                onPageSizeChanged={onPageSizeChanged}
