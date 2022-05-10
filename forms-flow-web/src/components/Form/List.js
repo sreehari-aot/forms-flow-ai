@@ -55,7 +55,8 @@ const List = React.memo((props) => {
     formId,
     onNo,
     onYes,
-    tenants
+    tenants,
+    path
   } = props;
 
   const isBPMFormListLoading = useSelector(state => state.bpmForms.isActive);
@@ -213,7 +214,7 @@ const List = React.memo((props) => {
                    "?"
                  }
                  onNo={() => onNo()}
-                 onYes={() => {onYes(formId, forms,formProcessData)}}
+                 onYes={() => {onYes(formId, forms,formProcessData,path,formCheckList)}}
                />
             <div className="flex-container">
               {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
@@ -316,7 +317,8 @@ const mapStateToProps = (state) => {
     formId: selectRoot("formDelete", state).formDelete.formId,
     formName: selectRoot("formDelete", state).formDelete.formName,
     isFormWorkflowSaved: selectRoot("formDelete", state).isFormWorkflowSaved,
-    tenants:selectRoot("tenants", state)
+    tenants:selectRoot("tenants", state),
+    path:selectRoot("formDelete", state).formDelete.path,
   };
 };
 
@@ -355,6 +357,7 @@ const mapDispatchToProps = (dispatch,ownProps) => {
               modalOpen: true,
               formId: form._id,
               formName: form.title,
+              path:form.path
             };
             if(data){
               dispatch(getApplicationCount(data.id,(err,res)=>{
@@ -377,15 +380,17 @@ const mapDispatchToProps = (dispatch,ownProps) => {
         default:
       }
     },
-    onYes: (formId, forms,formData) => {
+    onYes: (formId, forms,formData,path,formCheckList) => {
     if(formData.id){
-      dispatch(unPublishForm(formData.id)) 
+      dispatch(unPublishForm(formData.id))
       dispatch(
         deleteForm("form", formId, (err) => {
           if (!err) {
             const formDetails = {modalOpen: false, formId: "", formName: ""};
             dispatch(setFormDeleteStatus(formDetails));
             dispatch(indexForms("forms", 1, forms.query));
+            const newFormCheckList = formCheckList.filter((i)=>i.path!==path);
+            dispatch(setFormCheckList(newFormCheckList));
           }
         })
       )
@@ -393,7 +398,7 @@ const mapDispatchToProps = (dispatch,ownProps) => {
       dispatch(
         deleteForm("form", formId, (err) => {
           if (!err) {
-            toast.success( 'Form deleted successfully')
+            toast.success(<Translation>{(t)=>t("Form deleted successfully")}</Translation>);
             const formDetails = {modalOpen: false, formId: "", formName: ""};
             dispatch(setFormDeleteStatus(formDetails));
             dispatch(indexForms("forms", 1, forms.query));

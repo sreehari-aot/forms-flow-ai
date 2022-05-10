@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import { updateGroup } from "../../apiManager/services/dashboardsService";
 import Popover from '@material-ui/core/Popover';
 import { initiateUpdate, updateDashboardFromGroups } from "../../actions/dashboardActions";
-import { Translation } from "react-i18next";
+import { Translation,useTranslation } from "react-i18next";
 export const InsightDashboard = (props)=> {
 
   const {dashboardReducer} = props;
@@ -24,6 +24,7 @@ export const InsightDashboard = (props)=> {
   const isError =  dashboardReducer.iserror;
   const error = dashboardReducer.error;
   const updateError = dashboardReducer.updateError;
+  const{t}=useTranslation();
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -104,14 +105,13 @@ export const InsightDashboard = (props)=> {
     dataField: 'approvedGroups',
     text: <Translation>{(t)=>t("Access Groups")}</Translation>,
     formatter: (cell,rowData) => {
-      return  <> 
+      return  <div className="d-flex flex-wrap"> 
         {cell?.map(label => 
-        <div key={label.id} className="pull-left group-item-container">
-            <Button className="btn btn-secondary btn-sm form-btn pull-left btn-left group-item" disabled>{label.name} </Button>
-            <Button data-testid={rowData.name+label.name} variant="outline-secondary" className="btn-sm close-button" onClick={(e)=>removeDashboardFromGroup(rowData,label)}>x</Button>
+        <div key={label.id} className="chip-element mr-2">
+            <span className="chip-label">{label.name} <span className="chip-close" data-testid={rowData.name+label.name}onClick={(e)=>removeDashboardFromGroup(rowData,label)}><i className="fa fa-close"></i></span></span>
         </div>
           )}
-            </>
+            </div>
     }
    },
    {
@@ -147,7 +147,7 @@ export const InsightDashboard = (props)=> {
                       remainingGroups.map((item,key)=><ListGroup.Item key={key} as="button" 
                       onClick={()=>AddDashboardToGroup(item)}>{item.name}</ListGroup.Item>)
                     :
-                      <ListGroup.Item>{`All groups have access to the dashboard`}</ListGroup.Item>
+                      <ListGroup.Item>{`${t("All groups have access to the dashboard")}`}</ListGroup.Item>
                     }
                   </ListGroup>
               </Popover>
@@ -183,6 +183,7 @@ const handleSizeChange = (sizePerPage,page)=>{
 
   const pagination = paginationFactory({
     showTotal :true,
+    align:'left',
     sizePerPageList:getpageList(),
     page:activePage,
     sizePerPage:sizePerPage,
