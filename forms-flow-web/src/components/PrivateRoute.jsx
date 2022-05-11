@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import { BASE_ROUTE, MULTITENANCY_ENABLED } from "../constants/constants";
 import UserService from "../services/UserService";
 import {setUserAuth} from "../actions/bpmActions";
-import {CLIENT, Keycloak_Client, STAFF_REVIEWER, Keycloak_Tenant_Client} from "../constants/constants";
+import {CLIENT, STAFF_REVIEWER} from "../constants/constants";
 
 import Loading from "../containers/Loading";
 import NotFound from "./NotFound";
@@ -22,61 +22,28 @@ const PrivateRoute = React.memo((props) => {
   const dispatch = useDispatch();
   const isAuth = useSelector((state) => state.user.isAuthenticated);
   const userRoles = useSelector((state) => state.user.roles || []);
-  // const tenant = useSelector((state) => state.tenants.tenantDetail);
-  // const tenantKey = useSelector((state) => state.tenants.tenantId);
   const {tenantId} = useParams()
   const redirecUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantId}/` : `/`
-  // useEffect(() => {
-  //   if (props.store) {
-  //     UserService.initKeycloak(props.store, (err, res) => {
-  //       dispatch(setUserAuth(res.authenticated));
-  //     });
-  //   }
-  // }, [props.store, dispatch]);
 
   useEffect(()=>{  
-    if(tenantId){
-        let clientId = `${tenantId+"-"+Keycloak_Tenant_Client}`
+    if(tenantId && props.store){
         sessionStorage.setItem("tenantKey", tenantId)
         dispatch(setTenantFromId(tenantId))
-        if(UserService.KeycloakData){
-          UserService.initKeycloak(props.store, clientId, (err, res) => {
-            dispatch(setUserAuth(res.authenticated));
-          });
-        }else{
-          UserService.setKeycloakJson(tenantId,()=>{
+          UserService.setKeycloakJson(tenantId,(clientId)=>{
             UserService.initKeycloak(props.store, clientId, (err, res) => {
               dispatch(setUserAuth(res.authenticated));
             });
           })
-        }
     }else{
       if (props.store) {
-            UserService.setKeycloakJson(null, ()=>{
-              UserService.initKeycloak(props.store, Keycloak_Client, (err, res) => {
+            UserService.setKeycloakJson(null, (clientId)=>{
+              UserService.initKeycloak(props.store, clientId, (err, res) => {
                 dispatch(setUserAuth(res.authenticated));
               });
             })
       }
     }
   },[props.store,tenantId, dispatch])
-
-  // useEffect(()=>{
-  //   if(tenantId){
-  //     let clientId = `${tenantId+"-"+Keycloak_Tenant_Client}`
-  //     if(UserService.KeycloakData){
-  //       UserService.initKeycloak(props.store, clientId, (err, res) => {
-  //         dispatch(setUserAuth(res.authenticated));
-  //       });
-  //     }else{
-  //       UserService.setKeycloakJson(tenantId,()=>{
-  //         UserService.initKeycloak(props.store, clientId, (err, res) => {
-  //           dispatch(setUserAuth(res.authenticated));
-  //         });
-  //       })
-  //     }
-  //   }
-  // },[dispatch, tenantId, props.store]);
 
   const ReviewerRoute = ({component: Component, ...rest}) => (
     <Route
@@ -85,7 +52,7 @@ const PrivateRoute = React.memo((props) => {
         userRoles.includes(STAFF_REVIEWER) ? (
           <Component {...props} />
         ) : (
-          <Redirect exact to="/"/>
+          <Redirect exact to={redirecUrl}/>
         )
       }
     />
@@ -98,7 +65,7 @@ const PrivateRoute = React.memo((props) => {
         userRoles.includes(STAFF_REVIEWER) || userRoles.includes(CLIENT) ? (
           <Component {...props} />
         ) : (
-          <Redirect exact to="/"/>
+          <Redirect exact to={redirecUrl}/>
         )
       }
     />

@@ -30,7 +30,7 @@ const setKeycloakJson = (tenantKey=null, ...rest)=>{
   KeycloakData = new Keycloak(kcJson);
   doLogin = KeycloakData?.login;
   doLogout = KeycloakData?.logout;
-  done(null);
+  done(kcJson.clientId);
 }
 
 /**
