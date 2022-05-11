@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import { BASE_ROUTE, MULTITENANCY_ENABLED } from "../constants/constants";
 import UserService from "../services/UserService";
 import {setUserAuth} from "../actions/bpmActions";
-import {CLIENT, STAFF_REVIEWER} from "../constants/constants";
+import {CLIENT, STAFF_REVIEWER, STAFF_DESIGNER} from "../constants/constants";
 
 import Loading from "../containers/Loading";
 import NotFound from "./NotFound";
@@ -45,6 +45,20 @@ const PrivateRoute = React.memo((props) => {
     }
   },[props.store,tenantId, dispatch])
 
+  const DesignerRoute = ({component: Component, ...rest}) => (
+    <Route
+      {...rest}
+      render={(props) =>
+        userRoles.includes(STAFF_DESIGNER) ? (
+          <Component {...props} />
+        ) : (
+          <Redirect exact to="/404"/>
+        )
+      }
+    />
+  );
+
+
   const ReviewerRoute = ({component: Component, ...rest}) => (
     <Route
       {...rest}
@@ -52,7 +66,7 @@ const PrivateRoute = React.memo((props) => {
         userRoles.includes(STAFF_REVIEWER) ? (
           <Component {...props} />
         ) : (
-          <Redirect exact to={redirecUrl}/>
+          <Redirect exact to="/404"/>
         )
       }
     />
@@ -65,7 +79,7 @@ const PrivateRoute = React.memo((props) => {
         userRoles.includes(STAFF_REVIEWER) || userRoles.includes(CLIENT) ? (
           <Component {...props} />
         ) : (
-          <Redirect exact to={redirecUrl}/>
+          <Redirect exact to="/404"/>
         )
       }
     />
@@ -77,8 +91,8 @@ const PrivateRoute = React.memo((props) => {
         <Suspense fallback={<Loading/>}>
           <Switch>
             <Route path={`${BASE_ROUTE}form`} component={Form}/>
-            <Route path={`${BASE_ROUTE}admin`} component={Admin}/>
-            <Route path={`${BASE_ROUTE}formflow`} component={Form}/>
+            <DesignerRoute path={`${BASE_ROUTE}admin`} component={Admin}/>
+            <DesignerRoute path={`${BASE_ROUTE}formflow`} component={Form}/>
             <ClientReviewerRoute path={`${BASE_ROUTE}application`} component={Application}/>
             <ReviewerRoute path={`${BASE_ROUTE}metrics`} component={DashboardPage}/>
             <ReviewerRoute path={`${BASE_ROUTE}task`} component={ServiceFlow}/>
