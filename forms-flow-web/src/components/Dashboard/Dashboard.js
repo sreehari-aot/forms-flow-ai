@@ -223,7 +223,7 @@ const Dashboard = React.memo(() => {
                 activePage={activePage}
                 itemsCountPerPage={limit}
                 totalItemsCount={totalItems}
-                pageRangeDisplayed={pageRange}
+                pageRangeDisplayed={pageRange < 5 ? pageRange:5}
                 itemClass="page-item"
                 linkClass="page-link"
                 onChange={handlePageChange}
