@@ -39,7 +39,9 @@ role = API.model(
 role_success_response_model = API.model(
     "Roles",
     {
-        "form": fields.List(fields.Nested(role, description="The Todo")),
+        "form": fields.List(
+            fields.Nested(role, description="List of role / resource Ids")
+        ),
     },
 )
 
