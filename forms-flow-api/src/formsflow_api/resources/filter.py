@@ -45,8 +45,8 @@ properties = API.model(
     },
 )
 
-filter = API.model(
-    "Filter",
+filter_request = API.model(
+    "Filter request",
     {
         "name": fields.String(description="Name of the filter"),
         "description": fields.String(description="Description about filter"),
@@ -65,7 +65,7 @@ filter = API.model(
 )
 filter_response = API.inherit(
     "Filter response",
-    filter,
+    filter_request,
     {
         "status": fields.String(description="Status of the filter"),
         "tenant": fields.String(description="Authorized Tenant to the filter"),
@@ -120,7 +120,7 @@ class FilterResource(Resource):
         },
         model=filter_response,
     )
-    @API.expect(filter)
+    @API.expect(filter_request)
     def post():
         """
         Create filter.
@@ -219,7 +219,8 @@ class FilterResourceById(Resource):
     @auth.require
     @profiletime
     @API.doc(
-        responses={200: "OK:- Success", 403: "Permission denied"}, model=filter_response
+        responses={200: "OK:- Success", 403: "Permission denied", 400: "BAD_REQUEST"},
+        model=filter_response,
     )
     def get(filter_id: int):
         """
@@ -259,9 +260,10 @@ class FilterResourceById(Resource):
     @auth.require
     @profiletime
     @API.doc(
-        responses={200: "OK:- Success", 403: "Permission denied"}, model=filter_response
+        responses={200: "OK:- Success", 403: "Permission denied", 400: "BAD_REQUEST"},
+        model=filter_response,
     )
-    @API.expect(filter)
+    @API.expect(filter_request)
     def put(filter_id: int):
         """
         Update filter by id.
@@ -312,7 +314,9 @@ class FilterResourceById(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    @API.doc(responses={200: "OK:- Success", 403: "Permission denied"})
+    @API.doc(
+        responses={200: "OK:- Success", 403: "Permission denied", 400: "BAD_REQUEST"}
+    )
     def delete(filter_id: int):
         """
         Delete filter by id.
