@@ -85,9 +85,13 @@ class FilterResource(Resource):
 
     @staticmethod
     @auth.require
+    @auth.has_one_of_roles([REVIEWER_GROUP])
     @profiletime
     @API.doc(
-        responses={200: "OK:- Success", 403: "Permission denied"},
+        responses={
+            200: "OK:- Successful request.",
+            403: "FORBIDDEN:- Permission denied",
+        },
         model=[filter_response],
     )
     def get():
@@ -97,13 +101,7 @@ class FilterResource(Resource):
         List all active filters for requests with ```reviewer permission```.
         """
         try:
-            if auth.has_role([REVIEWER_GROUP]):
-                response, status = FilterService.get_all_filters(), HTTPStatus.OK
-            else:
-                response, status = {
-                    "type": "Authorization error",
-                    "message": "Permission denied",
-                }, HTTPStatus.FORBIDDEN
+            response, status = FilterService.get_all_filters(), HTTPStatus.OK
             return response, status
         except Exception as unexpected_error:
             current_app.logger.warning(unexpected_error)
@@ -111,12 +109,14 @@ class FilterResource(Resource):
 
     @staticmethod
     @auth.require
+    @auth.has_one_of_roles([REVIEWER_GROUP])
     @profiletime
     @API.doc(
         responses={
-            201: "Filter created",
-            403: "Permission denied",
-            400: "Validation Error",
+            201: "CREATED:- Successful request.",
+            400: "BAD_REQUEST:- Invalid request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+            403: "FORBIDDEN:- Permission denied",
         },
         model=filter_response,
     )
@@ -153,17 +153,11 @@ class FilterResource(Resource):
         ```
         """
         try:
-            if auth.has_role([REVIEWER_GROUP]):
-                filter_data = filter_schema.load(request.get_json())
-                response, status = (
-                    FilterService.create_filter(filter_data),
-                    HTTPStatus.CREATED,
-                )
-            else:
-                response, status = {
-                    "type": "Authorization error",
-                    "message": "Permission denied",
-                }, HTTPStatus.FORBIDDEN
+            filter_data = filter_schema.load(request.get_json())
+            response, status = (
+                FilterService.create_filter(filter_data),
+                HTTPStatus.CREATED,
+            )
             return response, status
         except ValidationError as error:
             current_app.logger.warning(error)
@@ -184,9 +178,13 @@ class UsersFilterList(Resource):
 
     @staticmethod
     @auth.require
+    @auth.has_one_of_roles([REVIEWER_GROUP])
     @profiletime
     @API.doc(
-        responses={200: "OK:- Success", 403: "Permission denied"},
+        responses={
+            200: "OK:- Successful request.",
+            403: "FORBIDDEN:- Permission denied",
+        },
         model=[filter_response],
     )
     def get():
@@ -196,13 +194,7 @@ class UsersFilterList(Resource):
         Get all active filters of current reviewer user for requests with ```reviewer permission```.
         """
         try:
-            if auth.has_role([REVIEWER_GROUP]):
-                response, status = FilterService.get_user_filters(), HTTPStatus.OK
-            else:
-                response, status = {
-                    "type": "Authorization error",
-                    "message": "Permission denied",
-                }, HTTPStatus.FORBIDDEN
+            response, status = FilterService.get_user_filters(), HTTPStatus.OK
             return response, status
         except Exception as unexpected_error:
             current_app.logger.warning(unexpected_error)
@@ -217,27 +209,26 @@ class FilterResourceById(Resource):
 
     @staticmethod
     @auth.require
+    @auth.has_one_of_roles([REVIEWER_GROUP])
     @profiletime
     @API.doc(
-        responses={200: "OK:- Success", 403: "Permission denied", 400: "BAD_REQUEST"},
+        responses={
+            201: "CREATED:- Successful request.",
+            400: "BAD_REQUEST:- Invalid request.",
+            403: "FORBIDDEN:- Permission denied",
+        },
         model=filter_response,
     )
     def get(filter_id: int):
         """
         Get filter by id.
 
-        Get filter details corresponding to a filter id for requests with ```reviewer permission```.
-        : filter_id:- unique id of filter.
+        Get filter details corresponding to a filter id for requests with ```REVIEWER_GROUP``` permission.
         """
         try:
-            if auth.has_role([REVIEWER_GROUP]):
-                filter_result = FilterService.get_filter_by_id(filter_id)
-                response, status = filter_schema.dump(filter_result), HTTPStatus.OK
-            else:
-                response, status = {
-                    "type": "Authorization error",
-                    "message": "Permission denied",
-                }, HTTPStatus.FORBIDDEN
+            filter_result = FilterService.get_filter_by_id(filter_id)
+            response, status = filter_schema.dump(filter_result), HTTPStatus.OK
+
             return response, status
         except PermissionError as err:
             response, status = (
@@ -258,9 +249,14 @@ class FilterResourceById(Resource):
 
     @staticmethod
     @auth.require
+    @auth.has_one_of_roles([REVIEWER_GROUP])
     @profiletime
     @API.doc(
-        responses={200: "OK:- Success", 403: "Permission denied", 400: "BAD_REQUEST"},
+        responses={
+            201: "CREATED:- Successful request.",
+            400: "BAD_REQUEST:- Invalid request.",
+            403: "FORBIDDEN:- Permission denied",
+        },
         model=filter_response,
     )
     @API.expect(filter_request)
@@ -268,22 +264,16 @@ class FilterResourceById(Resource):
         """
         Update filter by id.
 
-        Update filter details corresponding to a filter id for requests with ```reviewer permission```.
-        : filter_id:- unique id of filter.
+        Update filter details corresponding to a filter id for requests with ```REVIEWER_GROUP``` permission.
         """
         try:
-            if auth.has_role([REVIEWER_GROUP]):
-                filter_data = filter_schema.load(request.get_json())
-                filter_result = FilterService.update_filter(filter_id, filter_data)
-                response, status = (
-                    filter_schema.dump(filter_result),
-                    HTTPStatus.OK,
-                )
-            else:
-                response, status = {
-                    "type": "Authorization error",
-                    "message": "Permission denied",
-                }, HTTPStatus.FORBIDDEN
+            filter_data = filter_schema.load(request.get_json())
+            filter_result = FilterService.update_filter(filter_id, filter_data)
+            response, status = (
+                filter_schema.dump(filter_result),
+                HTTPStatus.OK,
+            )
+
             return response, status
         except PermissionError as err:
             response, status = (
@@ -313,26 +303,25 @@ class FilterResourceById(Resource):
 
     @staticmethod
     @auth.require
+    @auth.has_one_of_roles([REVIEWER_GROUP])
     @profiletime
     @API.doc(
-        responses={200: "OK:- Success", 403: "Permission denied", 400: "BAD_REQUEST"}
+        responses={
+            201: "CREATED:- Successful request.",
+            400: "BAD_REQUEST:- Invalid request.",
+            403: "FORBIDDEN:- Permission denied",
+        }
     )
     def delete(filter_id: int):
         """
         Delete filter by id.
 
-        Delete filter corresponding to a filter id for requests with ```reviewer permission```.
-        : filter_id:- unique id of filter.
+        Delete filter corresponding to a filter id for requests with ```REVIEWER_GROUP``` permission.
         """
         try:
-            if auth.has_role([REVIEWER_GROUP]):
-                FilterService.mark_inactive(filter_id=filter_id)
-                response, status = "Deleted", HTTPStatus.OK
-            else:
-                response, status = {
-                    "type": "Authorization error",
-                    "message": "Permission denied",
-                }, HTTPStatus.FORBIDDEN
+            FilterService.mark_inactive(filter_id=filter_id)
+            response, status = "Deleted", HTTPStatus.OK
+
             return response, status
         except PermissionError as err:
             response, status = (
