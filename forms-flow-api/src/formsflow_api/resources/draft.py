@@ -110,7 +110,7 @@ class DraftResource(Resource):
     @profiletime
     @API.doc(
         params={
-            "page_no": {
+            "pageNo": {
                 "in": "query",
                 "description": "Page number for paginated results",
                 "default": "1",
@@ -130,7 +130,7 @@ class DraftResource(Resource):
                 "description": "Specify sorting  order.",
                 "default": "desc",
             },
-            "form_name": {
+            "DraftName": {
                 "in": "query",
                 "description": "Filter resources by form name.",
                 "type": "string",
@@ -140,12 +140,12 @@ class DraftResource(Resource):
                 "description": "Filter resources by id.",
                 "type": "int",
             },
-            "modified_from_date": {
+            "modifiedFrom": {
                 "in": "query",
                 "description": "Filter resources by modified from.",
                 "type": "string",
             },
-            "modified_to_date": {
+            "modifiedTo": {
                 "in": "query",
                 "description": "Filter resources by modified to.",
                 "type": "string",

@@ -84,7 +84,6 @@ class FilterResource(Resource):
     """Resource to create and list filter."""
 
     @staticmethod
-    @auth.require
     @auth.has_one_of_roles([REVIEWER_GROUP])
     @profiletime
     @API.doc(
@@ -108,7 +107,6 @@ class FilterResource(Resource):
             raise unexpected_error
 
     @staticmethod
-    @auth.require
     @auth.has_one_of_roles([REVIEWER_GROUP])
     @profiletime
     @API.doc(
@@ -177,7 +175,6 @@ class UsersFilterList(Resource):
     """Resource to list filters specific to current user."""
 
     @staticmethod
-    @auth.require
     @auth.has_one_of_roles([REVIEWER_GROUP])
     @profiletime
     @API.doc(
@@ -208,7 +205,6 @@ class FilterResourceById(Resource):
     """Resource for managing filter by id."""
 
     @staticmethod
-    @auth.require
     @auth.has_one_of_roles([REVIEWER_GROUP])
     @profiletime
     @API.doc(
@@ -248,7 +244,6 @@ class FilterResourceById(Resource):
             raise unexpected_error
 
     @staticmethod
-    @auth.require
     @auth.has_one_of_roles([REVIEWER_GROUP])
     @profiletime
     @API.doc(
@@ -302,7 +297,6 @@ class FilterResourceById(Resource):
             return response, status
 
     @staticmethod
-    @auth.require
     @auth.has_one_of_roles([REVIEWER_GROUP])
     @profiletime
     @API.doc(
