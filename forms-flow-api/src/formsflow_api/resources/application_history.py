@@ -32,11 +32,14 @@ application_history_list_model = API.model(
     },
 )
 
-application_history_create_model = API.model("Application history Create", {
-    "applicationStatus": fields.String(),
-    "formUrl": fields.String(),
-    "submittedBy": fields.String()
-})
+application_history_create_model = API.model(
+    "Application history Create",
+    {
+        "applicationStatus": fields.String(),
+        "formUrl": fields.String(),
+        "submittedBy": fields.String(),
+    },
+)
 
 
 @cors_preflight("GET,OPTIONS")

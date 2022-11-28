@@ -41,10 +41,10 @@ application_base_model = API.model(
     },
 )
 
-check_response = API.model("Check Status", {
-    "is_anonymous": fields.Boolean(),
-    "status": fields.String()
-})
+check_response = API.model(
+    "Check Status", {"is_anonymous": fields.Boolean(), "status": fields.String()}
+)
+
 
 @cors_preflight("POST,OPTIONS")
 @API.route("/application/create", methods=["POST", "OPTIONS"])
