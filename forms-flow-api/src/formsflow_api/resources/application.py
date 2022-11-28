@@ -35,6 +35,10 @@ application_create_model = API.model(
     },
 )
 
+application_external_create_model = API.model(
+    "Application Create External", {"formId": fields.String(), "data": fields.Raw()}
+)
+
 application_base_model = API.model(
     "Application Create Response",
     {
@@ -533,7 +537,16 @@ class ApplicationCreation(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    @API.doc(responses={201: "Application Created", 400: "Validation Error"})
+    @API.doc(body=application_external_create_model)
+    @API.response(201, "CREATED:- Successful request.", model=application_base_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
     def post():
         """Post a new application using the request body.
 
