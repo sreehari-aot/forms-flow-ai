@@ -24,7 +24,7 @@ API = Namespace("Filter", description="Filter APIs")
 criteria = API.model(
     "Criteria",
     {
-        "CandidateGroup": fields.String(description="Filter task specific to group"),
+        "candidateGroup": fields.String(description="Filter task specific to group"),
         "includeAssignedTasks": fields.Boolean(description="Include assigned task"),
     },
 )
@@ -39,10 +39,7 @@ variable = API.model(
 
 properties = API.model(
     "Properties",
-    {
-        "showUndefinedVariable": fields.Boolean(description="Show undefined variables"),
-        "priority": fields.Integer(description="Show undefined variables"),
-    },
+    {"showUndefinedVariable": fields.Boolean(description="Show undefined variables")},
 )
 
 filter_request = API.model(
@@ -136,14 +133,11 @@ class FilterResource(Resource):
                     }
                 ],
             "criteria": {
-                "taskCandidateGroup":"/formsflow/formsflow-reviewer",
-                "includeAssignedTasks":true,
-                "condition":"ALL"
+                "candidateGroup":"/formsflow/formsflow-reviewer",
+                "includeAssignedTasks":true
             },
             "properties": {
-                "showUndefinedVariable":false,
-                "refresh": false,
-                "priority":10
+                "showUndefinedVariable":false
             },
             "users": [],
             "roles": ["/formsflow/formsflow-reviewer"]
