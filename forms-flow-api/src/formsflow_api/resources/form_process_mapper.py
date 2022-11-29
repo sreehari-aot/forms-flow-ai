@@ -22,6 +22,8 @@ from formsflow_api.services import ApplicationService, FormProcessMapperService
 
 
 class NullableString(fields.String):
+    """Extending String field to be nullable."""
+
     __schema_type__ = ["string", "null"]
     __schema_example__ = "nullable string"
 
