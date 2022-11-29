@@ -12,7 +12,7 @@ from formsflow_api.services import ProcessService
 API = Namespace("Process", description="Process")
 
 process_list_model = API.model(
-    "Process List",
+    "ProcessList",
     {
         "process": fields.List(
             fields.Nested(

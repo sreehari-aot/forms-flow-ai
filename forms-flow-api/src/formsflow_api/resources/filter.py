@@ -43,7 +43,7 @@ properties = API.model(
 )
 
 filter_request = API.model(
-    "Filter request",
+    "FilterRequest",
     {
         "name": fields.String(description="Name of the filter"),
         "description": fields.String(description="Description about filter"),
@@ -61,7 +61,7 @@ filter_request = API.model(
     },
 )
 filter_response = API.inherit(
-    "Filter response",
+    "FilterResponse",
     filter_request,
     {
         "status": fields.String(description="Status of the filter"),

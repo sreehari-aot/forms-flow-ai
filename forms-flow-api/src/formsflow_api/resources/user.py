@@ -14,7 +14,7 @@ from formsflow_api.services.factory import KeycloakFactory
 API = Namespace("user", description="Keycloak user APIs")
 
 user_list_model = API.model(
-    "user List",
+    "UserList",
     {
         "id": fields.String(),
         "email": fields.String(),

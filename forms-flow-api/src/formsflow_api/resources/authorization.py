@@ -13,7 +13,7 @@ auth_service = AuthorizationService()
 resource_details_model = API.model("resource_details", {"name": fields.String()})
 
 authorization_model = API.model(
-    "authorization",
+    "Authorization",
     {
         "resourceId": fields.String(),
         "resourceDetails": fields.Nested(resource_details_model),

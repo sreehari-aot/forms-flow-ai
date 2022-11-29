@@ -17,7 +17,7 @@ from formsflow_api.services import ApplicationService
 API = Namespace("Public", description="Public api endpoints")
 
 application_create_model = API.model(
-    "Application Create",
+    "AnonymousApplicationCreate",
     {
         "formId": fields.String(),
         "submissionId": fields.String(),
@@ -26,7 +26,7 @@ application_create_model = API.model(
 )
 
 application_base_model = API.model(
-    "Application Create Response",
+    "AnonymousApplicationCreateResponse",
     {
         "applicationStatus": fields.String(),
         "created": fields.String(),
@@ -42,7 +42,7 @@ application_base_model = API.model(
 )
 
 check_response = API.model(
-    "Check Status", {"is_anonymous": fields.Boolean(), "status": fields.String()}
+    "CheckStatus", {"is_anonymous": fields.Boolean(), "status": fields.String()}
 )
 
 

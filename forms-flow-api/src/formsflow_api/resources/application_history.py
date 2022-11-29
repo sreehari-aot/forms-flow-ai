@@ -12,7 +12,7 @@ from formsflow_api.services import ApplicationHistoryService
 # keeping the base path same for application history and application/
 API = Namespace("Application", description="Application")
 application_history_model = API.model(
-    "Application History",
+    "ApplicationHistory",
     {
         "applicationStatus": fields.String(),
         "created": fields.String(),
@@ -24,7 +24,7 @@ application_history_model = API.model(
 )
 
 application_history_list_model = API.model(
-    "Application History List",
+    "ApplicationHistoryList",
     {
         "applications": fields.List(
             fields.Nested(application_history_model, description="Application History")
@@ -33,7 +33,7 @@ application_history_list_model = API.model(
 )
 
 application_history_create_model = API.model(
-    "Application history Create",
+    "ApplicationHistoryCreate",
     {
         "applicationStatus": fields.String(),
         "formUrl": fields.String(),

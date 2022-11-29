@@ -13,7 +13,7 @@ analytics_service = RedashAPIService()
 auth_service = AuthorizationService()
 
 dashboard_base_model = API.model(
-    "Dashboard base",
+    "DashboardBase",
     {
         "created_at": fields.String(),
         "dashboard_filters_enabled": fields.Boolean(),
@@ -54,7 +54,7 @@ dashboard_model = API.inherit(
 )
 
 dashboard_list_model = API.model(
-    "Dashboard List",
+    "DashboardList",
     {
         "results": fields.List(fields.Nested(dashboard_base_model)),
         "count": fields.Integer(),

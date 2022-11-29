@@ -33,7 +33,7 @@ draft = API.model(
 )
 
 draft_response = API.inherit(
-    "Draft Response",
+    "DraftResponse",
     draft,
     {
         "CreatedBy": fields.String(),
@@ -47,11 +47,11 @@ draft_response = API.inherit(
 )
 
 draft_response_by_id = API.inherit(
-    "Draft Response by Id", draft_response, {"processKey": fields.String()}
+    "DraftResponseById", draft_response, {"processKey": fields.String()}
 )
 
 draft_create_response = API.model(
-    "Draft Created",
+    "DraftCreated",
     {
         "applicationId": fields.Integer(),
         "created": fields.String(),
@@ -84,7 +84,7 @@ submission = API.model(
 )
 
 submission_response = API.model(
-    "Submission Response",
+    "SubmissionResponse",
     {
         "applicationStatus": fields.String(),
         "created": fields.String(),

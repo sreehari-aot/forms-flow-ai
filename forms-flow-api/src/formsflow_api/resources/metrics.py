@@ -195,6 +195,10 @@ class AggregatedApplicationStatusResource(Resource):
         401,
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
     def get(mapper_id):
         """
         Get application metrics corresponding to a mapper_id.

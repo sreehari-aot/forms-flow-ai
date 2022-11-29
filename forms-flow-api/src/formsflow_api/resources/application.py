@@ -26,7 +26,7 @@ from formsflow_api.services import ApplicationService
 API = Namespace("Application", description="Application")
 
 application_create_model = API.model(
-    "Application Create",
+    "ApplicationCreate",
     {
         "formId": fields.String(),
         "submissionId": fields.String(),
@@ -36,11 +36,11 @@ application_create_model = API.model(
 )
 
 application_external_create_model = API.model(
-    "Application Create External", {"formId": fields.String(), "data": fields.Raw()}
+    "ApplicationCreateExternal", {"formId": fields.String(), "data": fields.Raw()}
 )
 
 application_base_model = API.model(
-    "Application Create Response",
+    "ApplicationCreateResponse",
     {
         "applicationStatus": fields.String(),
         "created": fields.String(),
@@ -67,7 +67,7 @@ application_model = API.inherit(
 )
 
 application_list_model = API.model(
-    "Application List",
+    "ApplicationList",
     {
         "applications": fields.List(
             fields.Nested(application_model, description="List of Applications.")
@@ -80,12 +80,12 @@ application_list_model = API.model(
 )
 
 application_update_model = API.model(
-    "Application Update",
+    "ApplicationUpdate",
     {"applicationStatus": fields.String(), "formUrl": fields.String()},
 )
 
 application_status_list_model = API.model(
-    "Status List", {"applicationStatus": fields.List(fields.String())}
+    "StatusList", {"applicationStatus": fields.List(fields.String())}
 )
 
 
