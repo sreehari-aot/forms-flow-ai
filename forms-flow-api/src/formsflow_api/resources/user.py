@@ -4,10 +4,13 @@ from http import HTTPStatus
 import requests
 from flask import current_app, g, request
 from flask_restx import Namespace, Resource, fields
-from formsflow_api_utils.utils import auth, cors_preflight, profiletime
+from formsflow_api_utils.utils import auth, cors_preflight, profiletime, ADMIN_GROUP
 from marshmallow import ValidationError
 
-from formsflow_api.schemas import UserlocaleReqSchema
+from formsflow_api.schemas import (
+    UserlocaleReqSchema,
+    UserPermissionUpdateSchema,
+)
 from formsflow_api.services import KeycloakAdminAPIService, UserService
 from formsflow_api.services.factory import KeycloakFactory
 
@@ -21,6 +24,11 @@ user_list_model = API.model(
         "firstName": fields.String(),
         "lastName": fields.String(),
     },
+)
+
+user_permission_update_model = API.model(
+    "UserPermission",
+    {"userId": fields.String(), "groupId": fields.String()},
 )
 
 locale_put_model = API.model("Locale", {"locale": fields.String()})
@@ -162,3 +170,76 @@ class KeycloakUsersList(Resource):
         except Exception as unexpected_error:
             current_app.logger.warning(unexpected_error)
             raise unexpected_error
+
+
+@cors_preflight("PUT, DELETE, OPTIONS")
+@API.route("/<string:user_id>/permission/groups/<string:group_id>", methods=["PUT", "DELETE", "OPTIONS"])
+class UserPermission(Resource):
+    """Resource to manage keycloak user permissions."""
+
+    @staticmethod
+    @auth.has_one_of_roles([ADMIN_GROUP])
+    @profiletime
+    @API.doc(body=user_permission_update_model)
+    @API.response(204, "NO CONTENT:- Successful request.")
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    def put(user_id, group_id):
+        """Add users to role / group."""
+        json_payload = request.get_json()
+        user_and_group = UserPermissionUpdateSchema().load(json_payload)
+        userId = user_and_group.get("userId")
+        groupId = user_and_group.get("groupId")
+        assert (user_id, group_id) == (userId, groupId)
+        current_app.logger.debug("Initializing admin API service...")
+        service = KeycloakAdminAPIService()
+        current_app.logger.debug("Successfully initialized admin API service !")
+        data = {
+            "realm": current_app.config.get("KEYCLOAK_URL_REALM"),
+            "userId": userId,
+            "groupId": groupId,
+        }
+        response = service.update_request(
+            url_path=f"users/{userId}/groups/{groupId}", data=data
+        )
+        if not response:
+            current_app.logger.error(f"Failed to add {userId} to group {groupId}")
+            return {
+                "type": "Bad request error",
+                "message": "Invalid request data",
+            }, HTTPStatus.BAD_REQUEST
+        return response, HTTPStatus.NO_CONTENT
+
+    @staticmethod
+    @auth.has_one_of_roles([ADMIN_GROUP])
+    @profiletime
+    @API.response(204, "NO CONTENT:- Successful request.")
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    def delete(user_id, group_id):
+        """Remove users from role / group."""
+        current_app.logger.debug("Initializing admin API service...")
+        service = KeycloakAdminAPIService()
+        current_app.logger.debug("Successfully initialized admin API service !")   
+        response = service.delete_request(
+            url_path=f"users/{user_id}/groups/{group_id}"
+        )
+        if not response:
+            current_app.logger.error(f"Failed to remove {user_id} from group {group_id}")
+            return {
+                "type": "Bad request error",
+                "message": "Invalid request data",
+            }, HTTPStatus.BAD_REQUEST
+        return response, HTTPStatus.NO_CONTENT 

@@ -12,3 +12,16 @@ class UserlocaleReqSchema(Schema):
         unknown = EXCLUDE
 
     locale = fields.Str(data_key="locale", required=True)
+
+
+class UserPermissionUpdateSchema(Schema):
+    """Schema for user role / group permissions"""
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        """Exclude unknown fields in the deserialized output."""
+
+        fields = ("realm", "userId", "groupId")
+        unknown = EXCLUDE
+
+    userId = fields.Str(data_key="userId", required=True)
+    groupId = fields.Str(data_key="groupId", required=True)
