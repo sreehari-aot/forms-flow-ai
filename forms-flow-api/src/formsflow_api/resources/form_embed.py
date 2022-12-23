@@ -31,7 +31,7 @@ application_base_model = API.model(
 )
 
 
-class EmbeddCommonMethods:
+class EmbedCommonMethods:
     """Common methods for internal and external authentication."""
 
     @staticmethod
@@ -100,7 +100,7 @@ class ApplicationCreateExternal(Resource):
         }
         ```
         """
-        return EmbeddCommonMethods.post()
+        return EmbedCommonMethods.post()
 
 
 @cors_preflight("GET,OPTIONS")
@@ -122,7 +122,7 @@ class FormExternal(Resource):
     )
     def get(path):
         """Get form by form name with external authentication."""
-        return EmbeddCommonMethods.get(path)
+        return EmbedCommonMethods.get(path)
 
 
 @cors_preflight("POST,OPTIONS")
@@ -163,7 +163,7 @@ class ApplicationCreateInternal(Resource):
         }
         ```
         """
-        return EmbeddCommonMethods.post()
+        return EmbedCommonMethods.post()
 
 
 @cors_preflight("GET,OPTIONS")
@@ -185,4 +185,4 @@ class FormInternal(Resource):
     )
     def get(path):
         """Get form by form name with internal authentication."""
-        return EmbeddCommonMethods.get(path)
+        return EmbedCommonMethods.get(path)
