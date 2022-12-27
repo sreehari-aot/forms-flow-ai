@@ -26,3 +26,4 @@ from formsflow_api.schemas.user import (
 )
 
 from .process import ProcessListSchema
+from .roles import RolesGroupsSchema
